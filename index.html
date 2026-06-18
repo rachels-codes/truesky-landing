@@ -32,8 +32,8 @@
   /* ── Top bar ── */
   .nav{display:flex;justify-content:space-between;align-items:center;
        padding:22px 7vw;position:relative;z-index:5;}
-  .brand{font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-0.3px;}
-  .brand::before{content:'◐ ';color:var(--amber);}
+  .brand{font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-0.3px;
+    display:inline-flex;align-items:center;gap:7px;}
   .nav-launch{font-size:11px;letter-spacing:1.4px;color:var(--dim);font-weight:700;text-transform:uppercase;}
 
   /* ── Hero ── */
@@ -66,6 +66,11 @@
   .wm-text{background:linear-gradient(100deg,#FFFFFF 0%,#BBDCFF 46%,#4FC3FF 100%);
     -webkit-background-clip:text;background-clip:text;
     -webkit-text-fill-color:transparent;color:transparent;}
+  /* Animated sun + moon orbit emblem (the logo mark) — recreates the app's
+     pull-to-refresh: a golden sun and a pale crescent moon circling, each
+     trailing a soft glow. Painted on <canvas> by JS below. */
+  .sm-emblem{display:block;flex:none;width:32px;height:32px;}
+  .f-brand .sm-emblem{width:28px;height:28px;}
 
   .eyebrow{font-size:18px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;
            color:var(--sky);margin-bottom:20px;}
@@ -158,8 +163,8 @@
 
   /* ── Footer ── */
   footer{border-top:1px solid var(--hairline);padding:40px 7vw;text-align:center;}
-  .f-brand{font-family:var(--font-display);font-size:16px;font-weight:600;}
-  .f-brand::before{content:'◐ ';color:var(--amber);}
+  .f-brand{font-family:var(--font-display);font-size:16px;font-weight:600;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;}
   .f-tag{font-family:'Google Sans Flex',serif;font-style:italic;font-size:14px;color:var(--muted);margin:10px 0;}
   .f-meta{font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;}
 
@@ -183,7 +188,7 @@
 
   <noscript><style>.reveal{opacity:1!important;transform:none!important;}</style></noscript>
   <nav class="nav">
-    <div class="brand">TrueSky</div>
+    <div class="brand"><canvas class="sm-emblem" aria-hidden="true"></canvas><span class="wm-text">TrueSky</span></div>
   </nav>
 
   <!-- ════ HERO ════ -->
@@ -193,7 +198,6 @@
     <div class="glow sky"></div>
     <div class="glow violet"></div>
     <div class="hero-inner">
-      <div class="hero-wordmark"><span class="wm-icon">◐</span><span class="wm-text">TrueSky</span></div>
       <div class="eyebrow">Launching Fall 2026</div>
       <h1>TrueSky Weather</h1>
       <div class="tagline">&ldquo;Forecast You Can Trust&rdquo;</div>
@@ -262,7 +266,7 @@
   </section>
 
   <footer>
-    <div class="f-brand">TrueSky</div>
+    <div class="f-brand"><canvas class="sm-emblem" aria-hidden="true"></canvas><span class="wm-text">TrueSky</span></div>
     <div class="f-tag">Because we tell the truth about the sky.</div>
     <div class="f-meta">© 2026 TrueSky Weather · Launching Fall 2026</div>
   </footer>
@@ -365,6 +369,74 @@
         }, 120);
       });
     });
+
+    // ── Sun + Moon orbit emblem (logo mark) ────────────────────────────
+    // Faithful port of the app's pull-to-refresh: a golden sun and a pale
+    // crescent moon orbit opposite each other, each trailing a soft glow.
+    // Calmer than the app (one slow revolution); respects reduced-motion.
+    (function(){
+      const cvs = Array.from(document.querySelectorAll('.sm-emblem'));
+      if(!cvs.length) return;
+      const reduce = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const items = cvs.map(cv=>{
+        const size = Math.max(16, Math.round(cv.getBoundingClientRect().width || 32));
+        cv.width = Math.round(size*dpr); cv.height = Math.round(size*dpr);
+        const ctx = cv.getContext('2d'); ctx.scale(dpr,dpr);
+        return {ctx, size};
+      });
+      function glow(ctx,x,y,r,rgb,a){
+        const g = ctx.createRadialGradient(x,y,0,x,y,r);
+        g.addColorStop(0,`rgba(${rgb},${a})`); g.addColorStop(1,`rgba(${rgb},0)`);
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill();
+      }
+      function trail(ctx,cx,cy,R,head,rgb,s){
+        const steps=12, sweep=Math.PI*0.65;
+        for(let i=0;i<steps;i++){
+          const t=i/steps, a=head - sweep*t;
+          glowDot(ctx, cx+R*Math.cos(a), cy+R*Math.sin(a), 4*s*(1-t*0.5), rgb, (1-t)*0.22);
+        }
+      }
+      function glowDot(ctx,x,y,r,rgb,a){
+        ctx.fillStyle=`rgba(${rgb},${a})`; ctx.beginPath(); ctx.arc(x,y,Math.max(0.4,r),0,7); ctx.fill();
+      }
+      function sun(ctx,x,y,s){
+        const r=8*s;
+        glow(ctx,x,y,r*2.4,'255,184,74',0.38);
+        ctx.strokeStyle='rgba(255,214,107,0.78)'; ctx.lineWidth=Math.max(0.7,1.4*s); ctx.lineCap='round';
+        for(let i=0;i<8;i++){ const a=i*Math.PI/4;
+          ctx.beginPath();
+          ctx.moveTo(x+Math.cos(a)*(r+2.5*s), y+Math.sin(a)*(r+2.5*s));
+          ctx.lineTo(x+Math.cos(a)*(r+5.5*s), y+Math.sin(a)*(r+5.5*s));
+          ctx.stroke();
+        }
+        ctx.fillStyle='#FFB84A'; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill();
+      }
+      function moon(ctx,x,y,s){
+        const r=10*s;
+        glow(ctx,x,y,r*2.2,'187,204,255',0.32);
+        ctx.fillStyle='#DDE8FF'; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill();
+        ctx.globalCompositeOperation='destination-out';
+        ctx.beginPath(); ctx.arc(x+r*0.55, y, r*0.85, 0, 7); ctx.fill();
+        ctx.globalCompositeOperation='source-over';
+      }
+      function frame(now){
+        const period=6000;
+        const angle = reduce ? (135*Math.PI/180) : ((now%period)/period)*Math.PI*2;
+        for(const it of items){
+          const {ctx,size}=it, cx=size/2, cy=size/2, R=size*0.30, s=R/26;
+          const sa=angle, ma=angle+Math.PI;
+          ctx.clearRect(0,0,size,size);
+          trail(ctx,cx,cy,R,sa,'255,184,74',s);
+          trail(ctx,cx,cy,R,ma,'187,204,255',s);
+          moon(ctx, cx+R*Math.cos(ma), cy+R*Math.sin(ma), s);
+          sun(ctx,  cx+R*Math.cos(sa), cy+R*Math.sin(sa), s);
+        }
+        if(!reduce) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
   </script>
 </body>
 </html>
