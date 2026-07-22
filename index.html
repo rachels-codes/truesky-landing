@@ -32,8 +32,8 @@
   /* ── Top bar ── */
   .nav{display:flex;justify-content:space-between;align-items:center;
        padding:22px 7vw;position:relative;z-index:5;}
-  .brand{font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-0.3px;
-    display:inline-flex;align-items:center;gap:7px;}
+  .brand{font-family:var(--font-display);font-size:26px;font-weight:600;letter-spacing:-0.3px;
+    display:inline-flex;align-items:center;gap:11px;}
   .nav-launch{font-size:11px;letter-spacing:1.4px;color:var(--dim);font-weight:700;text-transform:uppercase;}
 
   /* ── Hero ── */
@@ -69,8 +69,8 @@
   /* Animated sun + moon orbit emblem (the logo mark) — recreates the app's
      pull-to-refresh: a golden sun and a pale crescent moon circling, each
      trailing a soft glow. Painted on <canvas> by JS below. */
-  .sm-emblem{display:block;flex:none;width:32px;height:32px;}
-  .f-brand .sm-emblem{width:28px;height:28px;}
+  .sm-emblem{display:block;flex:none;width:48px;height:48px;}
+  .f-brand .sm-emblem{width:42px;height:42px;}
 
   .eyebrow{font-size:18px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;
            color:var(--sky);margin-bottom:20px;}
@@ -97,6 +97,11 @@
     transition:transform .15s ease,box-shadow .25s ease;box-shadow:0 0 28px rgba(79,195,255,0.28);white-space:nowrap;}
   .signup button:hover{transform:translateY(-1px);box-shadow:0 0 38px rgba(79,195,255,0.45);}
   .finepr{font-size:12px;color:var(--dim);margin-top:14px;}
+  /* trust badges under the CTA */
+  .badges{display:flex;flex-wrap:wrap;gap:9px 20px;justify-content:center;align-items:center;
+    margin-top:18px;font-size:12.5px;color:var(--muted);font-family:var(--font-body);}
+  .badges span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+  .badges .bk{color:var(--sky);font-weight:800;font-size:13px;}
 
   /* ── Sections ── */
   section.block{padding:52px 7vw;max-width:1000px;margin:0 auto;text-align:center;}
@@ -166,8 +171,8 @@
 
   /* ── Footer ── */
   footer{border-top:1px solid var(--hairline);padding:40px 7vw;text-align:center;}
-  .f-brand{font-family:var(--font-display);font-size:16px;font-weight:600;
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;}
+  .f-brand{font-family:var(--font-display);font-size:24px;font-weight:600;
+    display:inline-flex;align-items:center;justify-content:center;gap:11px;}
   .f-tag{font-family:'Google Sans Flex',serif;font-style:italic;font-size:14px;color:var(--muted);margin:10px 0;}
   .f-meta{font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;}
 
@@ -216,23 +221,15 @@
         <input type="email" name="email_address" placeholder="Your email" required>
         <button type="submit">Be the first to know</button>
       </form>
+      <div class="badges">
+        <span><b class="bk">✓</b> Free radar, always</span>
+        <span><b class="bk">✓</b> No clickbait</span>
+        <span><b class="bk">✓</b> Privacy-first</span>
+      </div>
     </div>
   </header>
 
-  <!-- ════ PERSONA ════ -->
-  <section class="block">
-    <div class="sec-eyebrow lg">Who it's for</div>
-    <h2 class="reveal">Built for people who look up.</h2>
-    <p class="sec-lede">For photographers, stargazers, gardeners, runners, people with sensitivities — and anyone tired of a forecast that hides what's really overhead.</p>
-    <div class="checks">
-      <div class="check reveal"><span class="mk">✓</span><p>You plan your life around the sky — a wedding, a playdate, golden hour, dark skies, planting days, a long run.</p></div>
-      <div class="check reveal"><span class="mk">✓</span><p>You've trusted an app that said "clear" when the sky was actually thick with smoke or haze.</p></div>
-      <div class="check reveal"><span class="mk">✓</span><p>You want to know what's actually in the air — particulates, haze, smoke — not just the temperature.</p></div>
-      <div class="check reveal"><span class="mk">✓</span><p>You want a forecast that's genuinely personalized to your life, your needs, and your plans — designed just for you.</p></div>
-    </div>
-  </section>
-
-  <!-- ════ WHY DIFFERENT ════ -->
+  <!-- ════ WHY DIFFERENT (now first) ════ -->
   <section class="block">
     <div class="sec-eyebrow lg">Why TrueSky</div>
     <h2 class="reveal">Honest and personalized by design.</h2>
@@ -257,6 +254,31 @@
     </div>
   </section>
 
+  <!-- ════ WHO IT'S FOR (now second, as cards) ════ -->
+  <section class="block">
+    <div class="sec-eyebrow lg">Who it's for</div>
+    <h2 class="reveal">Built for people who look up.</h2>
+    <p class="sec-lede">For photographers, stargazers, gardeners, runners, people with sensitivities — and anyone tired of a forecast that hides what's really overhead.</p>
+    <div class="cards">
+      <div class="card reveal">
+        <h3>You live by the sky</h3>
+        <p>A wedding, golden hour, dark skies, planting days, a long run — you plan your life around what's overhead.</p>
+      </div>
+      <div class="card reveal">
+        <h3>You've been misled before</h3>
+        <p>You've trusted an app that said "clear" when the sky was actually thick with smoke or haze.</p>
+      </div>
+      <div class="card reveal">
+        <h3>You want the whole truth</h3>
+        <p>What's actually in the air — particulates, haze, smoke — not just the temperature.</p>
+      </div>
+      <div class="card reveal">
+        <h3>You want it personal</h3>
+        <p>A forecast genuinely tailored to your life, your needs, and your plans — designed just for you.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ════ CTA (animated radar sweep behind) ════ -->
   <section class="cta">
     <div class="radar"><div class="radar-disc"><div class="radar-sweep"></div></div></div>
@@ -267,6 +289,11 @@
         <input type="email" name="email_address" placeholder="Your email" required>
         <button type="submit">Get early access</button>
       </form>
+      <div class="badges">
+        <span><b class="bk">✓</b> Free radar, always</span>
+        <span><b class="bk">✓</b> No clickbait</span>
+        <span><b class="bk">✓</b> Privacy-first</span>
+      </div>
     </div>
   </section>
 
