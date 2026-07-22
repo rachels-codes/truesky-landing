@@ -209,7 +209,7 @@
            Pages & Forms → New → Form), copy its action URL, and paste it
            into the form's action="" below — or replace this whole <form>
            with Kit's embed snippet. -->
-      <form class="signup" action="#REPLACE_WITH_KIT_FORM_ACTION" method="post">
+      <form class="signup" action="https://app.kit.com/forms/9715615/subscriptions" method="post">
         <input type="email" name="email_address" placeholder="Your email" required>
         <button type="submit">Be the first to know</button>
       </form>
@@ -257,7 +257,7 @@
     <div class="cta-inner">
       <!-- Runner-up CTA, stored for later: "Be first under an honest sky." -->
       <h2 class="reveal">Look up with confidence.</h2>
-      <form class="signup" action="#REPLACE_WITH_KIT_FORM_ACTION" method="post">
+      <form class="signup" action="https://app.kit.com/forms/9715615/subscriptions" method="post">
         <input type="email" name="email_address" placeholder="Your email" required>
         <button type="submit">Get early access</button>
       </form>
@@ -357,6 +357,13 @@
         e.preventDefault();
         const input = form.querySelector('input');
         if(!input.value){ input.focus(); return; }
+        // Save the email to Kit. Fire-and-forget: the subscription records
+        // even if CORS hides the JSON response, so we celebrate optimistically.
+        fetch(form.action, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new URLSearchParams({ email_address: input.value }),
+        }).catch(()=>{});
         weatherBurst(form.querySelector('button'));
         setTimeout(()=>{
           form.style.transition = 'opacity .35s'; form.style.opacity = '0';
